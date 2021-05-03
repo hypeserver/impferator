@@ -15,6 +15,6 @@ def group_agendas(agendas):
         practice_id = agenda['practice_id']
         motive_id = agenda['visit_motive_ids'][0]
 
-        agenda_ids[practice_id][motive_id].append(agenda['id'])
+        agenda_ids[practice_id][motive_id].append(str(agenda['id']))
 
     return agenda_ids
