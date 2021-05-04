@@ -1,10 +1,8 @@
 import requests
 
-from datetime import date
 import webbrowser
-
-from agendas import group_agendas
-from constants import *
+from datetime import date
+from collections import defaultdict
 
 
 appointment_link = "https://www.doctolib.de/institut/berlin/ciz-berlin-berlin?pid=practice-{practice}"
@@ -20,6 +18,24 @@ def generate_availability_url(practice_id, motive_id, agendas_string):
         practice=practice_id
     )
     return url
+
+def group_agendas(agendas):
+    agenda_ids = defaultdict(lambda: defaultdict(list))
+
+    for agenda in agendas:
+        if agenda['booking_disabled'] or agenda['booking_temporary_disabled']:
+            continue
+
+        if not agenda['visit_motive_ids']:
+            continue
+
+        practice_id = agenda['practice_id']
+        motive_id = agenda['visit_motive_ids'][0]
+
+        agenda_ids[practice_id][motive_id].append(str(agenda['id']))
+
+    return agenda_ids
+
 
 def check():
     agendas_json = requests.get(agendas_url).json()
