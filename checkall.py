@@ -15,12 +15,11 @@ slack_webhook_url = os.environ['SLACK_WEBHOOK']
 
 
 def slack_notification(amount, url):
-    slack_data = {'text': "{amount} asi var: {url}"}
+    msg = "{amount} asi var: {url}"
 
-    slack_formatted = {}
-    slack_formatted['text'] = slack_data['text'].format(amount=amount, url=url)
+    msg_formatted = {'text': msg.format(amount=amount, url=url)}
     response = requests.post(
-        slack_webhook_url, data=json.dumps(slack_formatted),
+        slack_webhook_url, data=json.dumps(msg_formatted),
         headers={'Content-Type': 'application/json'}
     )
     if response.status_code != 200:
@@ -73,7 +72,7 @@ def check():
             if availability['total']:
                 #print(availability['total'])
                 url = appointment_link.format(practice=practice_id)
-                
+
                 slack_notification(availability['total'], url)
                 #webbrowser.open_new(url)
 
