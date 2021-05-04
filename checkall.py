@@ -52,7 +52,7 @@ def check():
 
             if availability['total']:
                 print(availability['total'])
-                url = appointment_link.format(practice_id)
+                url = appointment_link.format(practice=practice_id)
 
                 webbrowser.open_new(url)
 
