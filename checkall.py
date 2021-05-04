@@ -1,6 +1,8 @@
 import requests
 
 import webbrowser
+import json
+import os
 from datetime import date
 from collections import defaultdict
 
@@ -8,6 +10,10 @@ from collections import defaultdict
 appointment_link = "https://www.doctolib.de/institut/berlin/ciz-berlin-berlin?pid=practice-{practice}"
 availability_url = "https://www.doctolib.de/availabilities.json?start_date={today}&visit_motive_ids={motive}&agenda_ids={agenda}&insurance_sector=public&practice_ids={practice}&destroy_temporary=true&limit=4"
 agendas_url = "https://www.doctolib.de/booking/ciz-berlin-berlin.json"
+
+slack_webhook_url = 'https://hooks.slack.com/services/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'
+slack_data = {'text': "{amount} asi var: {url}"}
+
 
 def generate_availability_url(practice_id, motive_id, agendas_string):
     today = date.today().strftime("%Y-%m-%d")
@@ -50,11 +56,17 @@ def check():
             #print(availability_url)
             availability = requests.get(availability_url).json()
 
-            if availability['total']:
-                print(availability['total'])
+            if availability['total'] == 0:
+                #print(availability['total'])
                 url = appointment_link.format(practice=practice_id)
 
-                webbrowser.open_new(url)
+                slack_data['text'] = slack_data['text'].format(amount=availability['total'], url=url)
+                response = requests.post(
+                    slack_webhook_url, data=json.dumps(slack_data),
+                    headers={'Content-Type': 'application/json'}
+                )
+
+                #webbrowser.open_new(url)
 
 if __name__ == "__main__":
     check()
