@@ -11,7 +11,7 @@ appointment_link = "https://www.doctolib.de/institut/berlin/ciz-berlin-berlin?pi
 availability_url = "https://www.doctolib.de/availabilities.json?start_date={today}&visit_motive_ids={motive}&agenda_ids={agenda}&insurance_sector=public&practice_ids={practice}&destroy_temporary=true&limit=4"
 agendas_url = "https://www.doctolib.de/booking/ciz-berlin-berlin.json"
 
-slack_webhook_url = 'https://hooks.slack.com/services/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'
+slack_webhook_url = os.environ['SLACK_WEBHOOK']
 slack_data = {'text': "{amount} asi var: {url}"}
 
 
@@ -56,14 +56,20 @@ def check():
             #print(availability_url)
             availability = requests.get(availability_url).json()
 
-            if availability['total'] == 0:
+            if availability['total']:
                 #print(availability['total'])
                 url = appointment_link.format(practice=practice_id)
 
-                slack_data['text'] = slack_data['text'].format(amount=availability['total'], url=url)
+                slack_formatted = {}
+                slack_formatted['text'] = slack_data['text'].format(amount=availability['total'], url=url)
                 response = requests.post(
-                    slack_webhook_url, data=json.dumps(slack_data),
+                    slack_webhook_url, data=json.dumps(slack_formatted),
                     headers={'Content-Type': 'application/json'}
+                )
+                if response.status_code != 200:
+                    raise ValueError(
+                        'Request to slack returned an error %s, the response is:\n%s'
+                        % (response.status_code, response.text)
                 )
 
                 #webbrowser.open_new(url)
