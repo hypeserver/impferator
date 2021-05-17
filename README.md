@@ -6,13 +6,13 @@ Checks availability on Doctolib, sends a notification to a slack channel.
 
 Create a slack app, add a new incoming webhook integration, copy the url and add it to env variables as `SLACK_WEBHOOK`.
 
-### Dependencies:
+#### Dependencies:
 
 ```
 requests
 ```
 
-### Example usage:
+#### Example usage:
 
 ```
 pip3 install requests
