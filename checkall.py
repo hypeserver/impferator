@@ -15,7 +15,7 @@ slack_webhook_url = os.environ['SLACK_WEBHOOK']
 
 
 def slack_notification(amount, url):
-    msg = "{amount} asi var: {url}"
+    msg = "{amount} vaccination appointments are available here: {url}"
 
     msg_formatted = {'text': msg.format(amount=amount, url=url)}
     response = requests.post(
