@@ -69,7 +69,7 @@ def check():
             #print(availability_url)
             availability = requests.get(availability_url).json()
 
-            if availability['total']:
+            if availability['total'] and availability['total'] < 100:
                 #print(availability['total'])
                 url = appointment_link.format(practice=practice_id)
 
