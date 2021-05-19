@@ -13,6 +13,9 @@ agendas_url = "https://www.doctolib.de/booking/ciz-berlin-berlin.json"
 
 slack_webhook_url = os.environ['SLACK_WEBHOOK']
 
+request_headers = {
+    'User-Agent': 'Impferator',
+}
 
 def slack_notification(amount, url):
     msg = "{amount} vaccination appointments are available here: {url}"
@@ -67,7 +70,7 @@ def check():
 
             availability_url = generate_availability_url(practice_id, motive_id, agendas_string)
             #print(availability_url)
-            availability = requests.get(availability_url).json()
+            availability = requests.get(availability_url, headers=request_headers).json()
 
             if availability['total'] and availability['total'] < 100:
                 #print(availability['total'])
